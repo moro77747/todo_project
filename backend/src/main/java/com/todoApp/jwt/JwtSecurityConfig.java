@@ -30,6 +30,7 @@ import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
+import org.springframework.stereotype.Component;
 import org.springframework.web.cors.CorsConfiguration;
 
 import static org.springframework.security.config.Customizer.withDefaults;
@@ -65,8 +66,10 @@ public class JwtSecurityConfig {
                                 .permitAll()
                                 .requestMatchers("/h2-console/**")
                                 .permitAll()
-                                .requestMatchers(HttpMethod.OPTIONS,"/**")
-                                .permitAll()
+                                    .requestMatchers("swagger-ui/**").permitAll()
+                                    .requestMatchers("v3/api-docs/**").permitAll()
+                                    .requestMatchers(HttpMethod.OPTIONS,"/**")
+                                    .permitAll()
                                     .requestMatchers("/users").permitAll()
                                 .anyRequest()
                                 .authenticated()) // (3)

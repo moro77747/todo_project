@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { login } from "./AuthUtils";
+import { login } from "../../trash/AuthUtils";
 
 const Login = () => {
- 
   const [credentials, setCredentials] = useState({
     username: "",
     password: "",
@@ -23,7 +22,7 @@ const Login = () => {
   };
 
   const handleSignUp = () => {
-    navigate("/signup"); 
+    navigate("/signup");
   };
 
   return (

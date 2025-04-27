@@ -1,20 +1,17 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { logout } from "../security/AuthUtils";
-
+import { logout } from "../redux/authSlice";
 const Header = () => {
   const dispatch = useDispatch();
-  const isAuthenticated = useSelector(
-    (state) => state.authReducer.isAuthenticated
-  );
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
-  const handleLogout = () => { 
+  const handleLogout = () => {
     dispatch(logout());
   };
 
   return (
     <header>
-      <h1>Task Management App</h1>
+      <h1>Todo</h1>
 
       {isAuthenticated && <button onClick={handleLogout}>Logout</button>}
     </header>
