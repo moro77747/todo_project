@@ -1,5 +1,8 @@
 package com.todoApp.jwt;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -8,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@Tag(name = "JwtAuthenticationController", description = "APIs for JWT-based authentication")
 public class JwtAuthenticationController {
     
     private final JwtTokenService tokenService;
@@ -20,9 +24,11 @@ public class JwtAuthenticationController {
         this.authenticationManager = authenticationManager;
     }
 
+    @Operation(summary = "Authenticate user and generate JWT token", 
+               description = "Authenticates the user using username and password, and returns a JWT token.")
     @PostMapping("/authenticate")
     public ResponseEntity<JwtTokenResponse> generateToken(
-            @RequestBody JwtTokenRequest jwtTokenRequest) {
+            @RequestBody @Parameter(description = "Credentials for authentication", required = true) JwtTokenRequest jwtTokenRequest) {
         
         var authenticationToken = 
                 new UsernamePasswordAuthenticationToken(
@@ -37,5 +43,3 @@ public class JwtAuthenticationController {
         return ResponseEntity.ok(new JwtTokenResponse(token));
     }
 }
-
-
