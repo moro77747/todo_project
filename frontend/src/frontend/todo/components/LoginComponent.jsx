@@ -1,18 +1,18 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { login } from "../../trash/AuthUtils";
-
+import { useDispatch } from "react-redux";
+import { loginUser } from "../api/authAction";
 const Login = () => {
   const [credentials, setCredentials] = useState({
     username: "",
     password: "",
   });
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      await login(credentials);
+      await dispatch(loginUser(credentials));
       // Handle successful login (e.g., redirect to dashboard)
       navigate("/dashboard");
     } catch (error) {

@@ -1,17 +1,28 @@
 import axios from "axios";
-
+import store from "../redux/store"; // Import the Redux store
 const apiClient = axios.create({
   baseURL: "http://localhost:8080",
 });
 
-export const signUp = async (values) => {
-  const response = await apiClient.post("/users", values);
-  // Handle success
-  console.log("User registered successfully:", response.data);
-  return response.data;
-};
+// Add a request interceptor to include the JWT token in headers
+apiClient.interceptors.request.use(
+  (config) => {
+    const token = store.getState().auth.token; // Get token directly from store
+    if (
+      token &&
+      !config.url.includes("/authenticate") &&
+      !config.url.includes("/users")
+    ) {
+      config.headers.Authorization = `Bearer ${token}`; // Add the token to the Authorization header
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
-export const login = async (values) => {
+export const signUp = async (values) => {
   const response = await apiClient.post("/users", values);
   // Handle success
   console.log("User registered successfully:", response.data);
@@ -43,6 +54,12 @@ export const updateUser = async (values) => {
 // API to get tasks by to-do list name
 export const getTasksByTodoListName = async (todoListName) => {
   const response = await apiClient.get(`/api/${todoListName}`);
+  return response.data;
+};
+
+// API to get tasklist by user name
+export const getTodolistByusername = async () => {
+  const response = await apiClient.post(`/api/tasklists`);
   return response.data;
 };
 
@@ -85,6 +102,12 @@ export const updateTodo = async (id, updatedTodo) => {
 // API to delete a task by its ID
 export const deleteTodo = async (id) => {
   const response = await apiClient.delete(`/api/tasks/${id}`);
+  return response.data;
+};
+
+// API to delete a tasklist by its ID
+export const deleteTodoList = async (id) => {
+  const response = await apiClient.delete(`/api/tasklists/${id}`);
   return response.data;
 };
 

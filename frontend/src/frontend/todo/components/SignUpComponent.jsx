@@ -1,96 +1,104 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Formik, Form, Field } from "formik";
-import * as Yup from "yup";
+import { Form, Input, Button, message } from "antd";
 import { signUp } from "../api/TodoService";
 
 const SignUpComponent = () => {
   const navigate = useNavigate();
-  const validate = Yup.object({
-    username: Yup.string().required("username Required!"),
+  const [loading, setLoading] = useState(false);
 
-    email: Yup.string().email("Email is invalid!").required("Email Required!"),
-    password: Yup.string()
-      .min(4, "Password must be minimum 4 digits!")
-      .required("Password Required!"),
-  });
+  // Handle form submission
+  const onFinish = async (values) => {
+    setLoading(true);
+    try {
+      console.log("Submitting values:", values);
+      // Process empty values for optional fields
+      const processedValues = {
+        ...values,
+        email: values.email?.trim() || null,
+        phoneNum: values.phoneNum?.trim() || null,
+      };
+      const result = await signUp(processedValues);
+      alert("Signup successful!"); // Alert success
+      navigate("/login");
+      console.log("Signup result:", result);
+    } catch (error) {
+      alert("Signup failed. Please try again."); // Alert failure
+      console.error("Signup error:", error);
+    }
+    setLoading(false);
+  };
+
+  // Handle form submission failure
+  const onFinishFailed = (errorInfo) => {
+    const errorMessages = errorInfo.errorFields
+      .map((field) => `${field.name[0]}: ${field.errors[0]}`)
+      .join("\n");
+    alert(
+      `Validation failed! Please fix the following errors:\n${errorMessages}`
+    ); // Alert validation errors
+  };
 
   return (
-    <div>
-      <Formik
+    <div style={{ maxWidth: "400px", margin: "0 auto", padding: "20px" }}>
+      <h1>Signup</h1>
+      <Form
+        layout="vertical"
+        onFinish={onFinish}
+        onFinishFailed={onFinishFailed}
         initialValues={{
           username: "",
           email: "",
           password: "",
           phoneNum: "",
-          roles: "user",
-        }}
-        validationSchema={validate}
-        onSubmit={async (values, { setSubmitting }) => {
-          try {
-            console.log("Submitting values:", values);
-            // consider the empty value
-            const processedValues = {
-              ...values,
-              email: values.email.trim() === "" ? null : values.email,
-              phoneNum: values.phoneNum.trim() === "" ? null : values.phoneNum,
-            };
-            const result = await signUp(processedValues);
-            // Show success alert
-            alert("Signup successful!");
-            navigate("/login");
-            console.log("Signup result:", result);
-          } catch (error) {
-            // Show error message
-            alert("Signup failed. Please try again.");
-            console.error("Signup error:", error);
-          }
-          setSubmitting(false);
         }}
       >
-        {() => (
-          <div>
-            <h1 className="">Signup</h1>
-            <Form
-              className="form p-3"
-              // onSubmit={(values) => {
-              //   values.preventDefault();
-              //   console.log(values.email);
-              //   signUp(
-              //     values.username,
-              //     values.email,
-              //     values.password,
-              //     values.phoneNum
-              //   );
-              // }}
-            >
-              {/* <fieldset className="form-group"> */}
-              <label>username</label>
-              <Field className="form-control" type="text" name="username" />
-              {/* </fieldset> */}
-              {/* <fieldset className="form-group"> */}
-              <label>email</label>
-              <Field className="form-control" type="text" name="email" />
-              {/* </fieldset> */}
-              {/* <fieldset className="form-group"> */}
-              <label>password</label>
-              <Field className="form-control" type="password" name="password" />
-              {/* </fieldset> */}
-              {/* <fieldset className="form-group"> */}
-              <label>phoneNumber</label>
-              <Field className="form-control" type="text" name="phoneNum" />
-              {/* </fieldset> */}
+        <Form.Item
+          label="Username"
+          name="username"
+          rules={[{ required: true, message: "Username is required!" }]}
+        >
+          <Input placeholder="Enter your username" />
+        </Form.Item>
 
-              <button className="btn btn-dark m-3" type="submit">
-                Register
-              </button>
-              <button className="btn btn-primary m-3" type="reset">
-                Reset
-              </button>
-            </Form>
-          </div>
-        )}
-      </Formik>
+        <Form.Item
+          label="Email"
+          name="email"
+          rules={[
+            { required: true, message: "Email is required!" },
+            { type: "email", message: "Email is invalid!" },
+          ]}
+        >
+          <Input placeholder="Enter your email" />
+        </Form.Item>
+
+        <Form.Item
+          label="Password"
+          name="password"
+          rules={[
+            { required: true, message: "Password is required!" },
+            { min: 4, message: "Password must be at least 4 characters!" },
+          ]}
+        >
+          <Input.Password placeholder="Enter your password" />
+        </Form.Item>
+
+        <Form.Item label="Phone Number" name="phoneNum">
+          <Input placeholder="Enter your phone number (optional)" />
+        </Form.Item>
+
+        <Form.Item>
+          <Button
+            type="primary"
+            htmlType="submit"
+            loading={loading}
+            style={{ marginRight: "10px" }}
+          >
+            Register
+          </Button>
+          <Button htmlType="reset">Reset</Button>
+        </Form.Item>
+      </Form>
     </div>
   );
 };

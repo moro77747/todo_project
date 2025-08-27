@@ -1,13 +1,16 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "./AxiosInstance";
-
-const Navigation = ({ isAuthenticated }) => {
+import user_image from "../assets/user_image.jpg"; // Adjust the path as necessary
+import { useSelector } from "react-redux";
+const Navigation = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [user, setUser] = useState({
+  // Access the Redux store state
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const user = useSelector((state) => state.auth.user) || {
     username: "User",
-    profilePic: "default-pic-url",
-  });
+    profilePic: user_image,
+  };
   const navigate = useNavigate();
 
   const handleSearch = async (event) => {
@@ -40,10 +43,22 @@ const Navigation = ({ isAuthenticated }) => {
           Search
         </button>
       </form>
-      <div className="profile-section" onClick={handleProfileClick}>
-        <img src={user.profilePic} alt="Profile" className="profile-pic" />
-        <span className="username">{user.username}</span>
-      </div>
+      {isAuthenticated ? (
+        <div className="profile-section" onClick={handleProfileClick}>
+          <img
+            src={user.profilePic}
+            width={50}
+            height={50}
+            alt="Profile"
+            className="profile-pic"
+          />
+          <span className="username">{user.username}</span>
+        </div>
+      ) : (
+        <button onClick={() => navigate("/login")} className="login-button">
+          Login
+        </button>
+      )}
     </nav>
   );
 };
