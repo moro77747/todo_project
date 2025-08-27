@@ -37,7 +37,6 @@ public class Users {
     @Schema(description = "Mobile number of the user", example = "4354437687")
     private String phoneNum;
 
-    @Schema(description = "Roles assigned to the user", example = "ADMIN, USER")
     private String roles;
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)

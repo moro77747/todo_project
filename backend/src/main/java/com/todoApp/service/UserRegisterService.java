@@ -19,6 +19,7 @@ public class UserRegisterService {
         }
         else
         {
+            user.setRoles("user");
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             usersRepository.save(user);
         }

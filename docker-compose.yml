@@ -1,0 +1,48 @@
+# Use a version of the Docker Compose file format.
+version: "3.8"
+
+# Define the services (containers) for the application.
+services:
+  # The frontend service, built from your React Dockerfile
+  frontend:
+    # Build the image from the Dockerfile in the current directory.
+    build:
+      context: ./frontend
+
+    # Map port 3000 on the host to port 3000 in the container.
+    ports:
+      - "3000:3000"
+
+    # Mount the local project directory into the container for hot-reloading.
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+    # Specify that the frontend service depends on the backend service.
+    # This ensures the backend starts before the frontend.
+    depends_on:
+      - backend
+
+    # Connect this service to the shared network.
+    networks:
+      - app-network
+
+  # The backend service, built from your Spring Boot Dockerfile
+  backend:
+    # Build the image from the Dockerfile located in the 'backend' directory.
+    # You will need to create a 'backend' folder and place your Dockerfile there.
+    build:
+      context: ./backend
+
+    # Map port 8080 on the host to port 8080 in the container.
+    ports:
+      - "8080:8080"
+
+    # Connect this service to the shared network.
+    networks:
+      - app-network
+
+# Define a network that both services can use to communicate with each other.
+networks:
+  app-network:
+    driver: bridge

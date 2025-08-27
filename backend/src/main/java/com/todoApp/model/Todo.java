@@ -43,12 +43,11 @@ public class Todo implements Serializable {
     @Schema(description = "Description of the task", example = "Write detailed documentation for the project")
     private String description;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)
-    @Schema(description = "Target date for completing the task", example = "27/04/2025")
+    @Schema(description = "Target date for completing the task", example = "2025-04-29")
     private LocalDate targetDate;
-
     @Schema(description = "Status of the task (true if completed, false otherwise)", example = "false")
     private Boolean done;
 

@@ -32,11 +32,11 @@ public class Repeat {
     @Schema(description = "Number of days for the frequency interval", example = "7")
     private Integer intervals;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-    @Schema(description = "Start date of the repeat configuration", example = "01/05/2025")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @Schema(description = "Start date of the repeat configuration", example = "2025-05-01")
     private LocalDate startDate;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-    @Schema(description = "End date of the repeat configuration", example = "31/05/2025")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @Schema(description = "End date of the repeat configuration", example = "2025-05-31")
     private LocalDate endDate;
 }

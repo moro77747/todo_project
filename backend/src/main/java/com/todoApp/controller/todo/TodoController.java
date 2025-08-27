@@ -33,8 +33,16 @@ public class TodoController {
     @ResponseBody
     public List<Todo> getTasksByTaskListName(
             @PathVariable @Parameter(description = "Name of the to-do list", example = "Daily Tasks") String todoListName) {
-        List<Todo> todos = todoListRepository.findByListName(todoListName).getList();
-        return todos;
+        List<TodoList> todoLists = todoListRepository.findByListName(todoListName);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        for(TodoList todoList1:todoLists)
+        {
+            if(todoList1.getUserName().equals(username))
+                return  todoList1.getList();
+        }
+        return null;
+
     }
 
     @Operation(summary = "Create a new to-do list", description = "Creates a new to-do list with the specified name.")
@@ -44,7 +52,15 @@ public class TodoController {
         TodoList todoList = new TodoList();
         todoList.setListName(todoListName);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        //listname under same user should be unique
         String username = authentication.getName();
+        List<TodoList> todoLists= todoListRepository.findByListName(todoListName);
+
+        for(TodoList todoList1:todoLists)
+        {
+            if(todoList1.getUserName().equals(username))
+                return  ResponseEntity.status(HttpStatus.BAD_REQUEST).body("already exist list name");
+        }
         todoList.setUserName(username);
         todoListRepository.save(todoList);
         return ResponseEntity.status(HttpStatus.CREATED).body("To-do list created successfully");
@@ -52,21 +68,27 @@ public class TodoController {
 
     @Operation(summary = "Create a new task", description = "Creates a new task and associates it with a specific to-do list.")
     @PostMapping("/api/{todoListName}/todo")
-    public ResponseEntity<String> createTodo(
+    public ResponseEntity<Todo> createTodo(
             @RequestBody @Parameter(description = "Details of the task to be created") Todo todo,
             @PathVariable @Parameter(description = "Name of the to-do list to associate the task with", example = "Daily Tasks") String todoListName) {
         try {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String username = authentication.getName();
             todo.setUsername(username);
-            TodoList todoList = todoListRepository.findByListName(todoListName);
+            List<TodoList> todoLists= todoListRepository.findByListName(todoListName);
+            TodoList todoList = null;
+            for(TodoList todoList1:todoLists)
+            {
+                if(todoList1.getUserName().equals(username))
+                    todoList = todoList1;
+            }
             todo.setTodoList(todoList);
             todoList.getList().add(todo);
             todoListRepository.save(todoList);
             todoRepository.save(todo);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Task created successfully");
+            return ResponseEntity.status(HttpStatus.CREATED).body(todo);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create task: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
@@ -129,5 +151,29 @@ public class TodoController {
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @Operation(summary = "Delete a task", description = "Deletes a task by its unique identifier.")
+    @DeleteMapping("api/tasklists/{id}")
+    public ResponseEntity<Void> deleteTodoList(
+            @PathVariable @Parameter(description = "Unique identifier of the task to be deleted", example = "1") long id) {
+        try {
+            todoListRepository.deleteById(id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @Operation(summary = "find todo list by user",description = " Find todo list name")
+    @PostMapping("api/tasklists")
+    public ResponseEntity<List<TodoList>> findTodoListByUserName()
+    {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        List<TodoList> todoList = todoListRepository.findByUserName(username);
+        if(todoList!=null) return ResponseEntity.ok(todoList);
+        else return ResponseEntity.notFound().build();
+
     }
 }

@@ -66,25 +66,28 @@ public class RepeatService {
             todo.setTargetDate(currentDate);
             todoList.getList().add(todo);
             generatedTodos.add(todo);
-
-            // Move to the next interval based on the repeat frequency
-            switch (repeat.getRepeateFrequency()) {
-                case daily:
-                    currentDate = currentDate.plusDays(1);
-                    break;
-                case weekly:
-                    currentDate = currentDate.plusWeeks(1);
-                    break;
-                case yearly:
-                    currentDate = currentDate.plusYears(1);
-                    break;
-                case monthly:
-                    currentDate = currentDate.plusMonths(1);
-                    break;
-                default:
-                    currentDate = currentDate.plusDays(repeat.getIntervals());
-                // Add cases for other frequencies as needed
+            if(repeat.getRepeateFrequency()== null)  currentDate = currentDate.plusDays(repeat.getIntervals());
+            else {
+                switch (repeat.getRepeateFrequency()) {
+                    case daily:
+                        currentDate = currentDate.plusDays(1);
+                        break;
+                    case weekly:
+                        currentDate = currentDate.plusWeeks(1);
+                        break;
+                    case yearly:
+                        currentDate = currentDate.plusYears(1);
+                        break;
+                    case monthly:
+                        currentDate = currentDate.plusMonths(1);
+                        break;
+                    default:
+                        currentDate = currentDate.plusDays(repeat.getIntervals());
+                        // Add cases for other frequencies as needed
+                }
             }
+            // Move to the next interval based on the repeat frequency
+
         }
 
         origTodo.setRepeatId(repeat.getRepeatId());

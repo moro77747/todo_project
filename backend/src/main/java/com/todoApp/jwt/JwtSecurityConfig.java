@@ -3,6 +3,7 @@ package com.todoApp.jwt;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPublicKey;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +50,7 @@ public class JwtSecurityConfig {
         return httpSecurity.cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(request -> {
             CorsConfiguration configuration = new CorsConfiguration();
             configuration.addAllowedMethod("*");
-            configuration.addAllowedHeader("Content-Type");
+            configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
             configuration.addAllowedOrigin("*");
             configuration.addAllowedOriginPattern("/**");
 

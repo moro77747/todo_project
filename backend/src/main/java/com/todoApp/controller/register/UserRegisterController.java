@@ -82,7 +82,7 @@ public class UserRegisterController {
         // Retrieve user from the database
         Users curUser = usersRepository.findByUsername(username);
         // Hash the new password
-        String hashedPassword = passwordEncoder.encode(user.getPassword());
+        String hashedPasswlord = passwordEncoder.encode(user.getPassword());
         Long id = curUser.getId();
         usersRepository.updateUserInfoById(user.getPassword(),user.getEmail(),user.getPhoneNum(),id);
         return ResponseEntity.ok().build();
