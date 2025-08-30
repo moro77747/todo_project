@@ -1,0 +1,28 @@
+logging.level.org.springframework=info
+spring.datasource.url=
+spring.datasource.username=postgres
+spring.datasource.password=
+
+spring.datasource.driver-class-name=org.postgresql.Driver
+
+
+spring.jpa.hibernate.ddl-auto= update
+spring.jpa.defer-datasource-initialization=true
+#spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
+spring.main.banner-mode=off
+logging.pattern.console= %d{MM-dd HH:mm:ss} - %logger{36} - %msg%n
+spring.h2.console.enabled=true
+#CHANGE
+#server.port=5000
+
+spring.mail.host=smtp.gmail.com
+spring.mail.port=587
+spring.mail.username=
+spring.mail.password=
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true
+spring.mail.properties.mail.smtp.starttls.required=true
+spring.mail.protocol=smtp
+
+springdoc.swagger-ui.enabled=true
+springdoc.api-docs.enabled=true
