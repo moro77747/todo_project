@@ -73,3 +73,13 @@ You can manage multiple to-do lists, create tasks, track time, search, and updat
 - Modify applications.properties.template yourself
 
 ---
+
+## Data model design
+
+## ![data model](todo-data-model-Page-1.png)
+
+---
+
+## Front end design
+
+![Design](Design.jpg)
