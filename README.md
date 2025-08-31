@@ -30,8 +30,10 @@ You can manage multiple to-do lists, create tasks, track time, search, and updat
 ### Backend
 
 1. Open the backend project in your Java IDE (such as IntelliJ IDEA or Eclipse).
-2. Run the main Java application (usually a Spring Boot application).
+2. Run the main Java application
 3. The backend will start on port `8080` by default.
+4. Make sure the backend is running before starting the frontend.
+5. complete database connection information and email information in applications.properties.template, then rename it to applications.properties
 
 ---
 
